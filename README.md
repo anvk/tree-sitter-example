@@ -82,7 +82,7 @@ Examples:
 
 ## Quick start
 
-Install node modules `npm install`
+Install node modules `npm install`.
 
 ```bash
 $ ./bin/silly-parser -f ./examples/example1.js -l fs/promises -p readFile
