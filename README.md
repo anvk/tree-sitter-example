@@ -96,7 +96,7 @@ $ ./bin/silly-parser -f ./examples/example1.js -l fs/promises -p readFile
 npm run test
 ```
 
-### Execution
+### How to run the code without CLI
 
 Install Node dependencies
 
@@ -108,13 +108,13 @@ $ npm install
 $ ts-node ./index.js -f ./examples/example1.js -l fs/promises -p readFile -v
 ```
 
-### Build
+### Build command
 
 ```bash
 npm run build
 ```
 
-### Using lib
+### Using lib in code instead of CLI
 
 ```typescript
 import SillyParser from './sillyParser';
@@ -160,6 +160,8 @@ router.get('/', async (req, res) => {
 Calling `./bin/silly-parser -f ../examples/example1.js -l fs/promises -p readFile` would yield no results because of the `const fs1 = fs;` line
 
 Also more tests are required
+
+Also it is not published to NPM. This CLI command cannot be installed using `npm install -g`
 
 ## License
 
