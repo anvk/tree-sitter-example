@@ -187,29 +187,28 @@ export default class SillyParser {
     }
 
     // Returns Line of Code and actual code for every <object>.<propertyName> in code
-    findObjectPropertiesLOC(objectName: string, propertyName: string): string[] {
+    // If propertyName is passed then the search is narrowed down to a specific property
+    findObjectPropertiesLOC(objectName: string, propertyName?: string): string[] {
         const result = this.findAllObjectPropertyNodes(objectName);
 
-        return result
-            .filter(element => element.propName === propertyName)
-            .map(element => {
-                const rowNum = element.node.startPosition.row;
-                const sourceFirstLine = this.sourceLines[rowNum].trim();
+        const filterFunc = propertyName
+            ? (element: ObjectPropertyNode) => element.propName === propertyName
+            : () => true;
 
-                return `<line ${rowNum}, ${sourceFirstLine}`;
-            });
+        return result.filter(filterFunc).map(element => {
+            const rowNum = element.node.startPosition.row;
+            const sourceFirstLine = this.sourceLines[rowNum].trim();
+
+            return `<line ${rowNum}, ${sourceFirstLine}`;
+        });
     }
 
     // Returns Line of Code and actual code for every <object>.<propertyName> in code
     // where object is derived from the require statement of type <object> = require(<libName>)
-    findRequireObjectPropertiesLOC(libName: string, propertyName: string): string[] {
+    // If propertyName is passed then the search is narrowed down to a specific property
+    findRequireObjectPropertiesLOC(libName: string, propertyName?: string): string[] {
         if (!libName) {
             console.error('libName is missing');
-            return [];
-        }
-
-        if (!propertyName) {
-            console.error('propertyName is missing');
             return [];
         }
 
@@ -219,11 +218,7 @@ export default class SillyParser {
         }
 
         const [specificRequire] = specificRequires;
-
         this.myLog('----> ', specificRequires);
-
-        const nodes = this.findAllObjectPropertyNodes(specificRequire.varName);
-        this.myLog('===>', nodes);
 
         return this.findObjectPropertiesLOC(specificRequire.varName, propertyName);
     }

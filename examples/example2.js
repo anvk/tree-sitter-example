@@ -11,7 +11,7 @@ module.exports = {
             filename: './index.html',
             template: path.resolve(configDirs.APP_DIR_TEMPLATES, './index.prod.html'),
             inject: true,
-            publicPath: configDirs.PUBLIC_PATH,
+            publicPath: path.join(configDirs.PUBLIC_PATH, 'public'),
         }),
         new HtmlWebpackInjector(),
     ],

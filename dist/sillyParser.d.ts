@@ -38,6 +38,6 @@ export default class SillyParser {
     findAllRequireVariables(): RequireNode[];
     findSpecificRequireVariables(libName: string): RequireNode[];
     findAllObjectPropertyNodes(objectName: string): ObjectPropertyNode[];
-    findObjectPropertiesLOC(objectName: string, propertyName: string): string[];
-    findRequireObjectPropertiesLOC(libName: string, propertyName: string): string[];
+    findObjectPropertiesLOC(objectName: string, propertyName?: string): string[];
+    findRequireObjectPropertiesLOC(libName: string, propertyName?: string): string[];
 }

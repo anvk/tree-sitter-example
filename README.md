@@ -1,12 +1,14 @@
 # tree-sitter-example
 
-My experimentation with (Tree Sitter)[https://tree-sitter.github.io/tree-sitter/] algorithm in Node.JS
+![Tree house image](https://tree-sitter.github.io/tree-sitter/assets/images/tree-sitter-small.png 'Tree house image')
 
-This is a JavaScript parser implementation
+Small and silly parser based on the [Tree Sitter](https://tree-sitter.github.io/tree-sitter/)
 
-## What
+JavaScript parser implementation
 
-This parser will make an attempt to find a specified lib `require` statement and then will find lines in a code for every function execution of the assigned object to the require statement.
+## What does it do
+
+This parser will make an attempt to find a specified lib `require` statement and then will find lines in a code for every variable reference (or a particular one if specified) for the object assigned to the require statement.
 
 For Example if you have file `test.js` in the same folder as the script:
 
@@ -24,54 +26,73 @@ module.exports = {
             filename: './index.html',
             template: path.resolve(configDirs.APP_DIR_TEMPLATES, './index.prod.html'),
             inject: true,
-            publicPath: configDirs.PUBLIC_PATH,
+            publicPath: path.join(configDirs.PUBLIC_PATH, 'public'),
         }),
         new HtmlWebpackInjector(),
     ],
 };
 ```
 
-Calling
+The following command will find `path` lib `resolve` calls
 
 ```
-./parser -f ./test.js -l path -p resolve
+./bin/silly-parser -f ./test.js -l path -p resolve
 ```
 
 Should produce an output:
 
 ```
-[]AllOccurrences of path calling resolve: <line 5, path: path.resolve(__dirname, 'bin'),,<line 11, template: path.resolve(configDirs.APP_DIR_TEMPLATES, './index.prod.html'),
+[]AllOccurrences of path referencing resolve:
+  <line 5, path: path.resolve(__dirname, 'bin'),
+  <line 11, template: path.resolve(configDirs.APP_DIR_TEMPLATES, './index.prod.html'),
+```
+
+The following command will find all `path` lib calls
+
+```
+./bin/silly-parser -f ./test.js -l path
+```
+
+Should produce an output:
+
+```
+[]AllOccurrences of path referencing resolve:
+  <line 5, path: path.resolve(__dirname, 'bin'),
+  <line 11, template: path.resolve(configDirs.APP_DIR_TEMPLATES, './index.prod.html'),
+  <line 13, publicPath: path.join(configDirs.PUBLIC_PATH, 'public'),
 ```
 
 ## Usage:
 
 ```bash
-Usage: parser -f [str] -l [str] -p [str] -v
+Usage: silly-parser -f [str] -l [str] -p [str] -v
 
 Options:
       --help      Show help                                            [boolean]
       --version   Show version number                                  [boolean]
   -f, --file      Path to a file                                      [required]
   -l, --libName   Lib name                                            [required]
-  -p, --propName  Prop name                                           [required]
+  -p, --propName  Prop name
 
 Examples:
-  parser -f ../examples/example1.js -l fs/promises -p readFile
+  silly-parser -f ../examples/example1.js -l fs/promises -p readFile
   will return code lines within example.js for object readFile() files for
   fs/promises lib
 ```
 
 ## Quick start
 
+Install node modules `npm install`
+
 ```bash
-$ ./bin/parser -f ../examples/example1.js -l fs/promises -p readFile
+$ ./bin/silly-parser -f ./examples/example1.js -l fs/promises -p readFile
 ```
 
 ## For developers
 
 ### Tests
 
-```
+```bash
 npm run test
 ```
 
@@ -84,13 +105,13 @@ $ npm install
 ```
 
 ```bash
-$ ts-node ./src/index.ts -f ../examples/example1.js -l fs/promises -p readFile -v
+$ ts-node ./index.js -f ./examples/example1.js -l fs/promises -p readFile -v
 ```
 
 ### Build
 
 ```bash
-rm -rf dist/ && npm run build
+npm run build
 ```
 
 ### Using lib
@@ -116,9 +137,9 @@ const result = parser.findRequireObjectPropertiesLOC('path', 'resolve');
 console.log(`[]AllOccurrences of path calling resolve ${result}`);
 ```
 
-### Limitation
+### Limitations
 
-This is a very basic implementation and does not take into consideration if variables are got reassigned or other complicated examples:
+This is a basic implementation and does not take into consideration if variables are reassigned
 
 Example:
 
@@ -136,4 +157,10 @@ router.get('/', async (req, res) => {
 });
 ```
 
-Calling `./bin/parser -f ../examples/example1.js -l fs/promises -p readFile` would yield no results because of the `const fs1 = fs;` line
+Calling `./bin/silly-parser -f ../examples/example1.js -l fs/promises -p readFile` would yield no results because of the `const fs1 = fs;` line
+
+Also more tests are required
+
+## License
+
+MIT license; see [LICENSE](./LICENSE).

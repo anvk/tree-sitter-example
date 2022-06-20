@@ -30,7 +30,7 @@ module.exports = {
             filename: './index.html',
             template: path.resolve(configDirs.APP_DIR_TEMPLATES, './index.prod.html'),
             inject: true,
-            publicPath: configDirs.PUBLIC_PATH,
+            publicPath: path.join(configDirs.PUBLIC_PATH, 'public'),
         }),
         new HtmlWebpackInjector(),
     ],
@@ -196,6 +196,25 @@ describe('SillyParser tests', () => {
                     "<line 11, template: path.resolve(configDirs.APP_DIR_TEMPLATES, './index.prod.html'),",
                 ],
             },
+            {
+                code: code2,
+                objectName: 'path',
+                propertyName: undefined,
+                output: [
+                    "<line 5, path: path.resolve(__dirname, 'bin'),",
+                    "<line 11, template: path.resolve(configDirs.APP_DIR_TEMPLATES, './index.prod.html'),",
+                    "<line 13, publicPath: path.join(configDirs.PUBLIC_PATH, 'public'),",
+                ],
+            },
+            {
+                code: code2,
+                objectName: 'configDirs',
+                propertyName: undefined,
+                output: [
+                    "<line 11, template: path.resolve(configDirs.APP_DIR_TEMPLATES, './index.prod.html'),",
+                    "<line 13, publicPath: path.join(configDirs.PUBLIC_PATH, 'public'),",
+                ],
+            },
         ];
 
         for (const testCase of testCases) {
@@ -236,6 +255,16 @@ describe('SillyParser tests', () => {
                 output: [
                     "<line 5, path: path.resolve(__dirname, 'bin'),",
                     "<line 11, template: path.resolve(configDirs.APP_DIR_TEMPLATES, './index.prod.html'),",
+                ],
+            },
+            {
+                code: code2,
+                libName: 'path',
+                propertyName: undefined,
+                output: [
+                    "<line 5, path: path.resolve(__dirname, 'bin'),",
+                    "<line 11, template: path.resolve(configDirs.APP_DIR_TEMPLATES, './index.prod.html'),",
+                    "<line 13, publicPath: path.join(configDirs.PUBLIC_PATH, 'public'),",
                 ],
             },
         ];
